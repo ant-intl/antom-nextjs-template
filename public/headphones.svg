@@ -1,0 +1,29 @@
+<svg width="360" height="300" viewBox="0 0 360 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="300" fill="white"/>
+  <g filter="url(#shadow)">
+    <path d="M108 141c0-55 28-91 72-91s72 36 72 91" stroke="#202124" stroke-width="16" stroke-linecap="round"/>
+    <path d="M112 132c-15 4-27 23-27 48 0 31 17 56 38 56 17 0 29-18 29-44 0-36-15-65-40-60Z" fill="url(#leftCup)"/>
+    <path d="M248 132c15 4 27 23 27 48 0 31-17 56-38 56-17 0-29-18-29-44 0-36 15-65 40-60Z" fill="url(#rightCup)"/>
+    <path d="M111 126c0-33 16-56 31-66" stroke="#2A2C30" stroke-width="12" stroke-linecap="round"/>
+    <path d="M249 126c0-33-16-56-31-66" stroke="#2A2C30" stroke-width="12" stroke-linecap="round"/>
+    <path d="M139 61c10-11 25-17 41-17s31 6 41 17" stroke="#37393D" stroke-width="14" stroke-linecap="round"/>
+    <ellipse cx="123" cy="184" rx="17" ry="35" fill="#111215" opacity=".45"/>
+    <ellipse cx="237" cy="184" rx="17" ry="35" fill="#111215" opacity=".28"/>
+    <path d="M221 144c12-8 28-9 39 5" stroke="white" stroke-width="5" stroke-linecap="round" opacity=".18"/>
+  </g>
+  <defs>
+    <filter id="shadow" x="58" y="30" width="244" height="229" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity=".18"/>
+    </filter>
+    <linearGradient id="leftCup" x1="92" y1="137" x2="158" y2="224" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A3B3E"/>
+      <stop offset=".45" stop-color="#151619"/>
+      <stop offset="1" stop-color="#050506"/>
+    </linearGradient>
+    <linearGradient id="rightCup" x1="213" y1="139" x2="277" y2="223" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#515255"/>
+      <stop offset=".5" stop-color="#26272B"/>
+      <stop offset="1" stop-color="#111215"/>
+    </linearGradient>
+  </defs>
+</svg>
