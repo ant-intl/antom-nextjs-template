@@ -5,27 +5,23 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
 import { describeAntomResult } from '@/lib/antom/errors';
+import type {
+  ApiError,
+  InquiryPaymentSuccess,
+  UiPaymentStatus,
+} from '@/lib/api-contracts';
 
-interface InquiryResult {
-  paymentRequestId: string;
-  status: 'SUCCESS' | 'FAIL' | 'PROCESSING' | 'CANCELLED' | string;
-  paymentId?: string;
-  amount?: { currency: string; value: string };
-  paymentTime?: string;
-  resultCode?: string;
-  resultMessage?: string;
-}
+const TERMINAL: ReadonlySet<UiPaymentStatus> = new Set(['SUCCESS', 'FAIL', 'CANCELLED']);
 
-// Exponential-ish backoff: 2, 3, 5, 8, 13, 21, 30, 30s (~110s total).
-// Long enough for slow methods (3DS, redirect-to-bank) without
-// hammering the API for fast ones.
+// Exponential-ish backoff: ~110s total. Long enough for slow methods
+// (3DS, redirect-to-bank) without hammering the API for fast ones.
 const POLL_DELAYS_MS = [2000, 3000, 5000, 8000, 13000, 21000, 30000, 30000];
 
 function ResultInner() {
   const params = useSearchParams();
   const prid = params.get('prid');
 
-  const [data, setData] = useState<InquiryResult | null>(null);
+  const [data, setData] = useState<InquiryPaymentSuccess | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [polling, setPolling] = useState(true);
 
@@ -43,16 +39,18 @@ function ResultInner() {
     async function fetchOnce() {
       try {
         const res = await fetch(`/api/inquiry-payment?prid=${prid}`);
-        const json = (await res.json()) as InquiryResult;
+        const json = (await res.json()) as InquiryPaymentSuccess | ApiError;
         if (cancelled) return;
+
+        if ('error' in json) {
+          setError(json.error);
+          setPolling(false);
+          return;
+        }
+
         setData(json);
 
-        const terminal =
-          json.status === 'SUCCESS' ||
-          json.status === 'FAIL' ||
-          json.status === 'CANCELLED';
-
-        if (terminal || attempt >= POLL_DELAYS_MS.length) {
+        if (TERMINAL.has(json.status) || attempt >= POLL_DELAYS_MS.length) {
           setPolling(false);
           return;
         }

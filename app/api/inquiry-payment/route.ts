@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { antomPost } from '@/lib/antom/client';
 import { orderStore } from '@/lib/orders/memory';
 import type { InquiryPaymentResponse } from '@/lib/antom/types';
+import type {
+  ApiError,
+  InquiryPaymentSuccess,
+  UiPaymentStatus,
+} from '@/lib/api-contracts';
 
 export const runtime = 'nodejs';
 
@@ -10,7 +15,7 @@ export const runtime = 'nodejs';
 // before returning payment status — otherwise anyone with a paymentRequestId
 // can read order state.
 
-function toPaymentStatus(localStatus?: string) {
+function toPaymentStatus(localStatus?: string): UiPaymentStatus {
   switch (localStatus) {
     case 'PAID':
       return 'SUCCESS';
@@ -23,7 +28,9 @@ function toPaymentStatus(localStatus?: string) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+): Promise<NextResponse<InquiryPaymentSuccess | ApiError>> {
   const prid = req.nextUrl.searchParams.get('prid');
   if (!prid) {
     return NextResponse.json({ error: 'Missing prid' }, { status: 400 });

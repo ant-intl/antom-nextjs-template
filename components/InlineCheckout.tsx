@@ -5,48 +5,46 @@ import Image from 'next/image';
 import { CheckoutFrame } from '@/components/CheckoutFrame';
 import type { Product } from '@/config/products';
 import { formatPrice } from '@/config/products';
-
-interface PaymentSession {
-  paymentRequestId: string;
-  paymentSessionData: string;
-  normalUrl?: string;
-}
+import type {
+  ApiError,
+  CreateSessionRequest,
+  CreateSessionSuccess,
+} from '@/lib/api-contracts';
 
 interface InlineCheckoutProps {
   product: Product;
-  environment: string;
+  environment: 'sandbox' | 'prod';
+}
+
+async function createPaymentSession(
+  body: CreateSessionRequest,
+): Promise<CreateSessionSuccess> {
+  const res = await fetch('/api/create-payment-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json()) as CreateSessionSuccess | ApiError;
+  if (!res.ok || 'error' in data) {
+    const message = 'error' in data ? data.error : `HTTP ${res.status}`;
+    throw new Error(message);
+  }
+  return data;
 }
 
 export function InlineCheckout({ product, environment }: InlineCheckoutProps) {
-  const [session, setSession] = useState<PaymentSession | null>(null);
+  const [session, setSession] = useState<CreateSessionSuccess | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function createSession() {
+  async function startCheckout() {
     setLoading(true);
     setError(null);
     setNotice(null);
-
     try {
-      const res = await fetch('/api/create-payment-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, quantity: 1 }),
-      });
-      const data = (await res.json()) as Partial<PaymentSession> & {
-        error?: string;
-      };
-
-      if (!res.ok || !data.paymentRequestId || !data.paymentSessionData) {
-        throw new Error(data.error ?? 'Failed to create payment session');
-      }
-
-      setSession({
-        paymentRequestId: data.paymentRequestId,
-        paymentSessionData: data.paymentSessionData,
-        normalUrl: data.normalUrl,
-      });
+      const data = await createPaymentSession({ productId: product.id, quantity: 1 });
+      setSession(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
@@ -114,7 +112,7 @@ export function InlineCheckout({ product, environment }: InlineCheckoutProps) {
 
             <button
               type="button"
-              onClick={createSession}
+              onClick={startCheckout}
               disabled={loading}
               className="mt-6 w-full rounded-lg bg-antom-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-antom-dark disabled:cursor-not-allowed disabled:opacity-60"
             >

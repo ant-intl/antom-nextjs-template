@@ -8,13 +8,13 @@ import type {
   CreatePaymentSessionRequest,
   CreatePaymentSessionResponse,
 } from '@/lib/antom/types';
+import type {
+  ApiError,
+  CreateSessionRequest,
+  CreateSessionSuccess,
+} from '@/lib/api-contracts';
 
 export const runtime = 'nodejs';
-
-interface RequestBody {
-  productId?: unknown;
-  quantity?: unknown;
-}
 
 const MAX_QUANTITY = 99;
 
@@ -26,8 +26,10 @@ function parseQuantity(input: unknown): number | null {
   return input;
 }
 
-export async function POST(req: NextRequest) {
-  let payload: RequestBody;
+export async function POST(
+  req: NextRequest,
+): Promise<NextResponse<CreateSessionSuccess | ApiError>> {
+  let payload: Partial<CreateSessionRequest>;
   try {
     payload = await req.json();
   } catch {
@@ -113,6 +115,17 @@ export async function POST(req: NextRequest) {
         result: resp.result,
       },
       { status: 400 },
+    );
+  }
+
+  if (!resp.paymentSessionData) {
+    console.error('[antom] createPaymentSession success without paymentSessionData', {
+      paymentRequestId,
+      response: resp,
+    });
+    return NextResponse.json(
+      { error: 'Antom returned success but no session data' },
+      { status: 502 },
     );
   }
 

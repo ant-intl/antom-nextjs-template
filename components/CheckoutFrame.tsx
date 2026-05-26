@@ -4,6 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 import { clientEnv } from '@/config/env';
 
+/** CKP SDK event codes we react to. See Antom docs for the full list. */
+export const SDK_EVENT = {
+  PaymentSuccessful: 'SDK_PAYMENT_SUCCESSFUL',
+  PaymentFail: 'SDK_PAYMENT_FAIL',
+  PaymentCancel: 'SDK_PAYMENT_CANCEL',
+  ClickBackToMerchant: 'SDK_PAYMENT_CLICK_BACK_TO_MERCHANT',
+} as const;
+
+export type AmsEventCode = (typeof SDK_EVENT)[keyof typeof SDK_EVENT];
+
 declare global {
   interface Window {
     AMSCheckoutPage?: new (options: AmsCheckoutOptions) => AmsCheckoutInstance;
@@ -11,7 +21,8 @@ declare global {
 }
 
 interface AmsEvent {
-  code: string;
+  /** Known event codes are exposed as a union; SDK may emit others over time. */
+  code: AmsEventCode | (string & {});
   message?: string;
   result?: { resultCode?: string; resultStatus?: string };
 }
@@ -90,16 +101,16 @@ export function CheckoutFrame({
           // SDK events drive UI transitions only. Authoritative payment state
           // must come from the server-side inquiryPayment call or the webhook.
           switch (event.code) {
-            case 'SDK_PAYMENT_SUCCESSFUL':
+            case SDK_EVENT.PaymentSuccessful:
               onSuccessRef.current?.();
               break;
-            case 'SDK_PAYMENT_FAIL':
+            case SDK_EVENT.PaymentFail:
               onFailRef.current?.(event.message ?? 'Payment failed');
               break;
-            case 'SDK_PAYMENT_CANCEL':
+            case SDK_EVENT.PaymentCancel:
               onFailRef.current?.('Payment cancelled');
               break;
-            case 'SDK_PAYMENT_CLICK_BACK_TO_MERCHANT':
+            case SDK_EVENT.ClickBackToMerchant:
               window.history.back();
               break;
             default:

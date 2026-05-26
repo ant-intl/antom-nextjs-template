@@ -4,14 +4,17 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckoutFrame } from '@/components/CheckoutFrame';
+import {
+  isStoredCheckoutSession,
+  type StoredCheckoutSession,
+} from '@/lib/api-contracts';
 
 function CheckoutInner() {
   const router = useRouter();
   const params = useSearchParams();
   const prid = params.get('prid');
 
-  const [sessionData, setSessionData] = useState<string | null>(null);
-  const [normalUrl, setNormalUrl] = useState<string | undefined>();
+  const [session, setSession] = useState<StoredCheckoutSession | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,20 +29,18 @@ function CheckoutInner() {
       );
       return;
     }
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(stored) as {
-        paymentSessionData: string;
-        normalUrl?: string;
-      };
-      if (!parsed.paymentSessionData) {
-        setError('Payment session data is missing. Please go back and click "Pay" again.');
-        return;
-      }
-      setSessionData(parsed.paymentSessionData);
-      setNormalUrl(parsed.normalUrl);
+      parsed = JSON.parse(stored);
     } catch {
       setError('Corrupted session data.');
+      return;
     }
+    if (!isStoredCheckoutSession(parsed)) {
+      setError('Payment session data is missing. Please go back and click "Pay" again.');
+      return;
+    }
+    setSession(parsed);
   }, [prid]);
 
   if (error) {
@@ -53,7 +54,7 @@ function CheckoutInner() {
     );
   }
 
-  if (!sessionData || !prid) {
+  if (!session || !prid) {
     return (
       <p className="text-center text-gray-500">Loading payment session...</p>
     );
@@ -61,9 +62,9 @@ function CheckoutInner() {
 
   return (
     <CheckoutFrame
-      paymentSessionData={sessionData}
+      paymentSessionData={session.paymentSessionData}
       paymentRequestId={prid}
-      normalUrl={normalUrl}
+      normalUrl={session.normalUrl}
       onSuccess={() => router.replace(`/result?prid=${prid}`)}
       onFail={() => router.replace(`/result?prid=${prid}`)}
     />
