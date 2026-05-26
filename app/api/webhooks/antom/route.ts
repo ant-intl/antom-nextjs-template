@@ -18,14 +18,10 @@ const ACK = {
   },
 };
 
-// Reject webhooks whose Request-Time is older/newer than this window.
-// Protects against replay of previously-captured valid notifications.
-const REPLAY_WINDOW_MS = 5 * 60 * 1000;
-
 function isFresh(requestTime: string): boolean {
   const ts = Date.parse(requestTime);
   if (Number.isNaN(ts)) return false;
-  return Math.abs(Date.now() - ts) <= REPLAY_WINDOW_MS;
+  return Math.abs(Date.now() - ts) <= antomConfig.replayWindowMs;
 }
 
 export async function POST(req: NextRequest) {
@@ -60,18 +56,29 @@ export async function POST(req: NextRequest) {
     return new NextResponse('stale request', { status: 401 });
   }
 
-  const { signature } = parseSignatureHeader(sigHeader);
+  // 5. Parse Signature header and assert the algorithm name we expect.
+  //    crypto.verify() below is hard-coded to RSA-SHA256, so a future
+  //    algorithm switch (e.g. SM2) must be an explicit code change rather
+  //    than silently "verify" against the wrong primitive.
+  const { signature, algorithm } = parseSignatureHeader(sigHeader);
   if (!signature) {
     console.warn('[antom-webhook] malformed signature header', { sigHeader });
     return new NextResponse('bad signature header', { status: 400 });
   }
+  if (algorithm && algorithm !== antomConfig.signatureAlgorithm) {
+    console.warn('[antom-webhook] unexpected signature algorithm', {
+      received: algorithm,
+      expected: antomConfig.signatureAlgorithm,
+    });
+    return new NextResponse('unsupported algorithm', { status: 401 });
+  }
 
-  // 5. Verify RSA signature against Antom platform public key.
-  //    Use the actual request path so reverse-proxy rewrites / trailing
-  //    slashes don't desync from the value Antom signed.
+  // 6. Verify RSA signature against Antom platform public key.
+  //    Use the configured notify path (what Antom signed) rather than the
+  //    proxied request path, which can differ on Vercel rewrites / basePath.
   const valid = verifyWebhook({
     method: 'POST',
-    uri: req.nextUrl.pathname,
+    uri: antomConfig.notifyPath,
     body: rawBody,
     clientId,
     requestTime,
@@ -81,13 +88,13 @@ export async function POST(req: NextRequest) {
 
   if (!valid) {
     console.warn('[antom-webhook] signature verification failed', {
-      uri: req.nextUrl.pathname,
+      uri: antomConfig.notifyPath,
       requestTime,
     });
     return new NextResponse('unauthorized', { status: 401 });
   }
 
-  // 6. Parse business payload.
+  // 7. Parse business payload.
   let payload: PaymentNotifyPayload;
   try {
     payload = JSON.parse(rawBody) as PaymentNotifyPayload;
@@ -101,13 +108,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(ACK);
   }
 
-  // 7. Idempotency check.
+  // 8. Idempotency check.
   const existing = await orderStore.get(payload.paymentRequestId);
   if (existing && (existing.status === 'PAID' || existing.status === 'FAILED')) {
     return NextResponse.json(ACK);
   }
 
-  // 8. Update order based on resultStatus (S = success, F = fail, U = unknown).
+  // 9. Update order based on resultStatus (S = success, F = fail, U = unknown).
   try {
     if (payload.result.resultStatus === 'S' && payload.paymentId) {
       await orderStore.markPaid(payload.paymentRequestId, payload.paymentId);

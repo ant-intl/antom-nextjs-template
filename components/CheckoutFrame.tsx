@@ -14,6 +14,12 @@ export const SDK_EVENT = {
 
 export type AmsEventCode = (typeof SDK_EVENT)[keyof typeof SDK_EVENT];
 
+const KNOWN_SDK_EVENTS: ReadonlySet<string> = new Set(Object.values(SDK_EVENT));
+
+function isKnownEvent(code: string): code is AmsEventCode {
+  return KNOWN_SDK_EVENTS.has(code);
+}
+
 declare global {
   interface Window {
     AMSCheckoutPage?: new (options: AmsCheckoutOptions) => AmsCheckoutInstance;
@@ -21,8 +27,8 @@ declare global {
 }
 
 interface AmsEvent {
-  /** Known event codes are exposed as a union; SDK may emit others over time. */
-  code: AmsEventCode | (string & {});
+  /** SDK may emit codes we don't recognise; filter via isKnownEvent before switching. */
+  code: string;
   message?: string;
   result?: { resultCode?: string; resultStatus?: string };
 }
@@ -44,6 +50,8 @@ interface AmsCheckoutInstance {
 interface CheckoutFrameProps {
   paymentSessionData: string;
   paymentRequestId: string;
+  /** HMAC-signed prid token (returned by /api/create-payment-session). */
+  prsig?: string;
   normalUrl?: string;
   onSuccess?: () => void;
   onFail?: (message: string) => void;
@@ -100,6 +108,7 @@ export function CheckoutFrame({
         onEventCallback: (event) => {
           // SDK events drive UI transitions only. Authoritative payment state
           // must come from the server-side inquiryPayment call or the webhook.
+          if (!isKnownEvent(event.code)) return;
           switch (event.code) {
             case SDK_EVENT.PaymentSuccessful:
               onSuccessRef.current?.();
@@ -114,7 +123,9 @@ export function CheckoutFrame({
               window.history.back();
               break;
             default:
-              break;
+              // Exhaustive guard: adding a new SDK_EVENT entry without
+              // handling it here becomes a compile error.
+              ((_: never) => {})(event.code);
           }
         },
       });

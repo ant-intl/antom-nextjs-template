@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { antomPost } from '@/lib/antom/client';
 import { antomConfig } from '@/lib/antom/config';
+import { signPrid } from '@/lib/antom/prid-token';
 import { orderStore } from '@/lib/orders/memory';
 import { getProduct } from '@/config/products';
 import type {
@@ -54,6 +55,17 @@ export async function POST(
   }
 
   const amountInt = product.price * quantity;
+  if (!Number.isSafeInteger(amountInt)) {
+    console.error('[antom] amount overflowed safe integer range', {
+      price: product.price,
+      quantity,
+      product: product.id,
+    });
+    return NextResponse.json(
+      { error: 'Order amount exceeds supported range' },
+      { status: 400 },
+    );
+  }
   const amountValue = String(amountInt);
 
   const paymentRequestId = randomUUID().replace(/-/g, '');
@@ -82,7 +94,7 @@ export async function POST(
     },
     paymentAmount: { currency: product.currency, value: amountValue },
     settlementStrategy: { settlementCurrency: antomConfig.defaultCurrency },
-    paymentRedirectUrl: `${antomConfig.siteUrl}/result?prid=${paymentRequestId}`,
+    paymentRedirectUrl: `${antomConfig.siteUrl}/result?prid=${signPrid(paymentRequestId)}`,
     paymentNotifyUrl: `${antomConfig.siteUrl}${antomConfig.notifyPath}`,
     env: { terminalType: 'WEB' },
   };
@@ -131,6 +143,7 @@ export async function POST(
 
   return NextResponse.json({
     paymentRequestId,
+    prsig: signPrid(paymentRequestId),
     paymentSessionId: resp.paymentSessionId,
     paymentSessionData: resp.paymentSessionData,
     normalUrl: resp.normalUrl,

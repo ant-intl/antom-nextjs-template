@@ -143,6 +143,7 @@ export function InlineCheckout({ product, environment }: InlineCheckoutProps) {
                 key={session.paymentRequestId}
                 paymentSessionData={session.paymentSessionData}
                 paymentRequestId={session.paymentRequestId}
+                prsig={session.prsig}
                 normalUrl={session.normalUrl}
                 onSuccess={() => setNotice('Payment success')}
                 onFail={(message) => setNotice(message)}

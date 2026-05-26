@@ -36,3 +36,8 @@ yarn-error.log*
 # IDE
 .vscode/
 .idea/
+
+# Agent skills (installed locally per-developer via `tnpx skills add`)
+.agents/
+.claude/
+skills-lock.json

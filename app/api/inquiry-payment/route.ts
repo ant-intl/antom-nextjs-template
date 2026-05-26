@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { antomPost } from '@/lib/antom/client';
+import { verifyPrid } from '@/lib/antom/prid-token';
 import { orderStore } from '@/lib/orders/memory';
 import type { InquiryPaymentResponse } from '@/lib/antom/types';
 import type {
   ApiError,
   InquiryPaymentSuccess,
-  UiPaymentStatus,
+  ResponsePaymentStatus,
 } from '@/lib/api-contracts';
 
 export const runtime = 'nodejs';
 
-// NOTE: This endpoint is intentionally open in the template. In production,
-// verify the caller owns the order (e.g. via session, JWT, or signed cookie)
-// before returning payment status — otherwise anyone with a paymentRequestId
-// can read order state.
+// The `prid` query parameter is an HMAC-signed token produced by
+// /api/create-payment-session. Verifying it ensures the caller actually
+// initiated the order — without it, anyone who guessed/leaked a UUID
+// could read order state. For production use with real user accounts,
+// replace this with a session-bound check.
 
-function toPaymentStatus(localStatus?: string): UiPaymentStatus {
+function toResponseStatus(localStatus?: string): ResponsePaymentStatus {
   switch (localStatus) {
     case 'PAID':
       return 'SUCCESS';
@@ -31,9 +33,14 @@ function toPaymentStatus(localStatus?: string): UiPaymentStatus {
 export async function GET(
   req: NextRequest,
 ): Promise<NextResponse<InquiryPaymentSuccess | ApiError>> {
-  const prid = req.nextUrl.searchParams.get('prid');
-  if (!prid) {
+  const tokenParam = req.nextUrl.searchParams.get('prid');
+  if (!tokenParam) {
     return NextResponse.json({ error: 'Missing prid' }, { status: 400 });
+  }
+
+  const prid = verifyPrid(tokenParam);
+  if (!prid) {
+    return NextResponse.json({ error: 'Invalid prid token' }, { status: 403 });
   }
 
   const local = await orderStore.get(prid);
@@ -52,7 +59,7 @@ export async function GET(
     return NextResponse.json(
       {
         paymentRequestId: prid,
-        status: toPaymentStatus(local?.status),
+        status: toResponseStatus(local?.status),
         source: 'local-fallback',
       },
       { status: 200 },

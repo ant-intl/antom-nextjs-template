@@ -57,7 +57,7 @@ export async function antomPost<T>(
         'Content-Type': 'application/json; charset=UTF-8',
         'Client-Id': antomConfig.clientId,
         'Request-Time': requestTime,
-        Signature: `algorithm=RSA256,keyVersion=1,signature=${signature}`,
+        Signature: `algorithm=${antomConfig.signatureAlgorithm},keyVersion=${antomConfig.keyVersion},signature=${signature}`,
       },
       body,
       cache: 'no-store',

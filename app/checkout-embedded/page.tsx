@@ -64,9 +64,10 @@ function CheckoutInner() {
     <CheckoutFrame
       paymentSessionData={session.paymentSessionData}
       paymentRequestId={prid}
+      prsig={session.prsig}
       normalUrl={session.normalUrl}
-      onSuccess={() => router.replace(`/result?prid=${prid}`)}
-      onFail={() => router.replace(`/result?prid=${prid}`)}
+      onSuccess={() => router.replace(`/result?prid=${encodeURIComponent(session.prsig)}`)}
+      onFail={() => router.replace(`/result?prid=${encodeURIComponent(session.prsig)}`)}
     />
   );
 }

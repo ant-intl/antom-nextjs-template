@@ -8,10 +8,14 @@ import { describeAntomResult } from '@/lib/antom/errors';
 import type {
   ApiError,
   InquiryPaymentSuccess,
-  UiPaymentStatus,
+  ResponsePaymentStatus,
 } from '@/lib/api-contracts';
 
-const TERMINAL: ReadonlySet<UiPaymentStatus> = new Set(['SUCCESS', 'FAIL', 'CANCELLED']);
+const TERMINAL: ReadonlySet<ResponsePaymentStatus> = new Set([
+  'SUCCESS',
+  'FAIL',
+  'CANCELLED',
+]);
 
 // Exponential-ish backoff: ~110s total. Long enough for slow methods
 // (3DS, redirect-to-bank) without hammering the API for fast ones.
@@ -31,6 +35,7 @@ function ResultInner() {
       setPolling(false);
       return;
     }
+    const token = prid;
 
     let cancelled = false;
     let attempt = 0;
@@ -38,7 +43,7 @@ function ResultInner() {
 
     async function fetchOnce() {
       try {
-        const res = await fetch(`/api/inquiry-payment?prid=${prid}`);
+        const res = await fetch(`/api/inquiry-payment?prid=${encodeURIComponent(token)}`);
         const json = (await res.json()) as InquiryPaymentSuccess | ApiError;
         if (cancelled) return;
 

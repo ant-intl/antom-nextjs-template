@@ -1,10 +1,10 @@
-import type { UiPaymentStatus } from '@/lib/api-contracts';
+import type { RenderablePaymentStatus } from '@/lib/api-contracts';
 
 interface PaymentStatusBadgeProps {
-  status: UiPaymentStatus;
+  status: RenderablePaymentStatus;
 }
 
-const STYLES: Record<UiPaymentStatus, string> = {
+const STYLES: Record<RenderablePaymentStatus, string> = {
   SUCCESS: 'bg-green-100 text-green-800 border-green-200',
   FAIL: 'bg-red-100 text-red-800 border-red-200',
   CANCELLED: 'bg-gray-100 text-gray-800 border-gray-200',
@@ -13,7 +13,7 @@ const STYLES: Record<UiPaymentStatus, string> = {
   UNKNOWN: 'bg-gray-100 text-gray-700 border-gray-200',
 };
 
-const LABELS: Record<UiPaymentStatus, string> = {
+const LABELS: Record<RenderablePaymentStatus, string> = {
   SUCCESS: 'Paid',
   FAIL: 'Failed',
   CANCELLED: 'Cancelled',
