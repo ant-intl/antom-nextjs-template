@@ -2,6 +2,7 @@
   "name": "antom-nextjs-template",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "description": "Accept global payments with Antom CKP Embedded + Next.js on Vercel",
   "scripts": {
     "dev": "next dev",
