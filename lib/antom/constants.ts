@@ -3,17 +3,17 @@
  * may need to change when you reconfigure your merchant account.
  *
  * These live in source (not env) on purpose — changing them implies a
- * matching change in Antom Console, which is a coordinated code +
+ * matching change in Antom Dashboard, which is a coordinated code +
  * platform change rather than an ops dial. Bumping any of these
  * requires a redeploy.
  */
 
 /**
- * Version of the merchant RSA key pair currently uploaded to Antom Console.
+ * Version of the merchant RSA key pair currently uploaded to Antom Dashboard.
  *
  * When rotating keys:
  *   1. Generate a new RSA-2048 pair.
- *   2. Upload the new public key to Antom Console → Developers → Keys
+ *   2. Upload the new public key to Antom Dashboard → Developer → Key configuration
  *      and obtain its assigned key version (typically '2', '3', ...).
  *   3. Bump this constant to match.
  *   4. Replace ANTOM_PRIVATE_KEY env in Vercel with the new private key.

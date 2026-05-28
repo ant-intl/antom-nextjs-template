@@ -1,6 +1,6 @@
 # Antom × Vercel — One-time Payment Demo
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Console&envLink=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Dashboard&envLink=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo)
 
 Accept global payments via **Antom Checkout Page (Embedded)**, powered by Next.js 14 App Router.
 
@@ -26,7 +26,7 @@ Webhook: Antom Gateway ─▶ POST /api/webhooks/antom ─▶ verify + update
 
 | Variable | Required | Exposed to Client | Description |
 |----------|:--------:|:-----------------:|-------------|
-| `ANTOM_CLIENT_ID` | ✅ | No | Merchant identifier from Antom Console → Developers → Integration Settings |
+| `ANTOM_CLIENT_ID` | ✅ | No | Merchant identifier from Antom Dashboard → Developer → Integration Settings |
 | `ANTOM_PRIVATE_KEY` | ✅ | No | RSA2048 private key, single-line base64, no PEM headers |
 | `ANTOM_PUBLIC_KEY` | ✅ | No | Antom platform public key for webhook verification |
 | `ANTOM_GATEWAY_URL` | ✅ | No | `https://open-sea-global.alipay.com` (Asia) |
@@ -66,7 +66,7 @@ openssl rsa -in priv.pem -pubout -out pub.pem
 # 4. Convert private key to single-line, paste into ANTOM_PRIVATE_KEY
 awk 'NF{printf "%s",$0}' priv.pem | sed 's/-----[^-]*-----//g'
 
-# 5. Upload pub.pem to Antom Console; download Antom platform public key
+# 5. Upload pub.pem to Antom Dashboard; download Antom platform public key
 #    → paste into ANTOM_PUBLIC_KEY
 
 # 6. Run
@@ -116,13 +116,13 @@ antom-nextjs-template/
 ## Deploy to Production
 
 1. Generate **separate** production RSA key pair
-2. Upload public key to Antom Console (Production environment)
+2. Upload public key to Antom Dashboard (Production environment)
 3. Update Vercel env vars (scope: Production only):
    - `ANTOM_CLIENT_ID` → production
    - `ANTOM_PRIVATE_KEY` → production
    - `ANTOM_PUBLIC_KEY` → production Antom public key
    - `NEXT_PUBLIC_ANTOM_ENV` → `prod`
-4. Whitelist your custom domain in Antom Console
+4. Whitelist your custom domain in Antom Dashboard
 5. Redeploy
 
 ## Persistence
@@ -143,14 +143,14 @@ export const orderStore: OrderStore = kvOrderStore; // or postgresOrderStore
 | Symptom | Cause | Fix |
 |---|---|---|
 | `SIGN_VERIFY_FAILURE` | Sign string mismatch | Body used for signing must equal body sent |
-| Webhook returns 401 | Antom public key wrong | Re-download from Console, single-line base64 |
+| Webhook returns 401 | Antom public key wrong | Re-download from Dashboard, single-line base64 |
 | CKP shows blank | Session expired (~30 min) | Create a new session |
 | `Missing required env` | Env var not set | Check `.env.local` or Vercel Settings |
 
 ## Learn More
 
 - [Antom Documentation](https://docs.antom.com)
-- [Antom Console](https://console.antom.com)
+- [Antom Dashboard](https://dashboard.antom.com)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Vercel Templates](https://vercel.com/templates)
 
