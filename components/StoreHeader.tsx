@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import { STORE } from '@/config/store';
 
-const REPO = 'https://github.com/ant-intl/antom-nextjs-template';
-
 function Logo() {
   return (
     <svg viewBox="0 0 28 28" className="h-7 w-7" aria-hidden>
@@ -42,14 +40,9 @@ export function StoreHeader() {
           <Link href="/" className="hidden text-gray-600 transition hover:text-gray-950 sm:inline">
             Shop
           </Link>
-          <a
-            href={REPO}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden text-gray-600 transition hover:text-gray-950 sm:inline"
-          >
+          <Link href="/" className="hidden text-gray-600 transition hover:text-gray-950 sm:inline">
             Support
-          </a>
+          </Link>
           <button
             type="button"
             aria-label="Cart"
