@@ -159,7 +159,7 @@ function ResultInner() {
         <p className="mt-4 text-sm font-medium text-red-800">{error}</p>
         <Link
           href="/"
-          className="mt-6 inline-block rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ink-soft"
+          className="mt-6 inline-block rounded-full bg-ui-blue px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ui-blue-hover"
         >
           Back to store
         </Link>
@@ -233,7 +233,7 @@ function ResultInner() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/"
-          className="flex-1 rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-ink-soft"
+          className="flex-1 rounded-full bg-ui-blue px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-ui-blue-hover"
         >
           Continue shopping
         </Link>

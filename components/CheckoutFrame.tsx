@@ -64,6 +64,7 @@ const SDK_URL = 'https://js.antom.com/v2/ams-checkout.js';
 export function CheckoutFrame({
   paymentSessionData,
   paymentRequestId,
+  prsig,
   normalUrl,
   onSuccess,
   onFail,
@@ -73,13 +74,15 @@ export function CheckoutFrame({
   const [sdkReady, setSdkReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Keep latest callbacks in refs so they don't trigger SDK re-mount on every parent re-render.
+  // Keep latest callbacks/props in refs so they don't trigger SDK re-mount on every parent re-render.
   const onSuccessRef = useRef(onSuccess);
   const onFailRef = useRef(onFail);
+  const prsigRef = useRef(prsig);
   useEffect(() => {
     onSuccessRef.current = onSuccess;
     onFailRef.current = onFail;
-  }, [onSuccess, onFail]);
+    prsigRef.current = prsig;
+  }, [onSuccess, onFail, prsig]);
 
   useEffect(() => {
     if (sdkReady || error) return;
@@ -124,9 +127,18 @@ export function CheckoutFrame({
             case SDK_EVENT.PaymentCancel:
               onFailRef.current?.('Payment cancelled');
               break;
-            case SDK_EVENT.ClickBackToMerchant:
-              window.history.back();
+            case SDK_EVENT.ClickBackToMerchant: {
+              // "Continue shopping" on the SDK success page. The whole flow is
+              // same-page React state, so history.back() has nowhere to go —
+              // send the buyer to the authoritative result page instead.
+              const token = prsigRef.current;
+              if (token) {
+                window.location.assign(`/result?prid=${encodeURIComponent(token)}`);
+              } else {
+                window.location.assign('/');
+              }
               break;
+            }
             default:
               // Exhaustive guard: adding a new SDK_EVENT entry without
               // handling it here becomes a compile error.
@@ -176,7 +188,7 @@ export function CheckoutFrame({
         {normalUrl && (
           <a
             href={normalUrl}
-            className="mt-5 inline-block rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ink-soft"
+            className="mt-5 inline-block rounded-full bg-ui-blue px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ui-blue-hover"
           >
             Continue with hosted checkout
           </a>
@@ -215,7 +227,7 @@ export function CheckoutFrame({
         {!sdkReady && (
           <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white">
             <div className="w-full max-w-md px-8 text-center">
-              <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-gray-200 border-t-ink" />
+              <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-gray-200 border-t-ui-blue" />
               <p className="mt-5 text-sm font-medium text-gray-900">
                 Loading secure checkout
               </p>
