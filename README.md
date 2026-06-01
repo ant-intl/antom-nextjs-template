@@ -4,6 +4,8 @@
 
 Accept global payments via **Antom Checkout Page (Embedded)**, powered by Next.js 14 App Router.
 
+> ⚠️ **For demonstration purposes only.** This template is for demonstration purposes only, is not production-ready, and is provided "as-is" without warranty. To the maximum extent permitted under applicable laws, Antom assumes no liability for any losses arising from its use or deployment. By using this template, you are acknowledging and agreeing to this. See [LEGAL.md](./LEGAL.md) and [LICENSE](./LICENSE) for trademark, AML/KYC, data-privacy, and warranty notices.
+
 ## Features
 
 - 100+ global payment methods via a single integration
@@ -154,6 +156,8 @@ export const orderStore: OrderStore = kvOrderStore; // or postgresOrderStore
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Vercel Templates](https://vercel.com/templates)
 
-## License
+## License & Legal
 
-MIT
+MIT — see [LICENSE](./LICENSE).
+
+For trademark, AML/CFT/KYC, data-privacy (GDPR/PDPA), demonstration-only, and warranty notices, see [LEGAL.md](./LEGAL.md).
