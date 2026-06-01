@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { StoreHeader } from '@/components/StoreHeader';
+import { StoreFooter } from '@/components/StoreFooter';
+import { STORE } from '@/config/store';
 
 export const metadata: Metadata = {
-  title: 'Antom Payment Demo',
-  description:
-    'Accept global payments with Antom CKP Embedded mode on Vercel + Next.js.',
+  title: `${STORE.name} — Premium Audio`,
+  description: `${STORE.tagline} Secure global checkout powered by Antom.`,
 };
 
 export default function RootLayout({
@@ -14,8 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
-        <div className="min-h-screen">{children}</div>
+      <body className="flex min-h-screen flex-col font-sans antialiased">
+        <StoreHeader />
+        <div className="flex-1">{children}</div>
+        <StoreFooter />
       </body>
     </html>
   );
