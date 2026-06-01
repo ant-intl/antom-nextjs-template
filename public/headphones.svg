@@ -1,5 +1,4 @@
 <svg width="360" height="300" viewBox="0 0 360 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="360" height="300" fill="white"/>
   <g filter="url(#shadow)">
     <path d="M108 141c0-55 28-91 72-91s72 36 72 91" stroke="#202124" stroke-width="16" stroke-linecap="round"/>
     <path d="M112 132c-15 4-27 23-27 48 0 31 17 56 38 56 17 0 29-18 29-44 0-36-15-65-40-60Z" fill="url(#leftCup)"/>

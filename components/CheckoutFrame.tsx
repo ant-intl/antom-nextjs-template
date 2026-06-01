@@ -35,6 +35,8 @@ interface AmsEvent {
 
 interface AmsCheckoutOptions {
   environment: 'sandbox' | 'prod';
+  /** BCP-style locale the embedded cashier renders in, e.g. 'en_US', 'zh_CN'. */
+  locale?: string;
   onEventCallback?: (event: AmsEvent) => void;
   onLog?: (log: unknown) => void;
 }
@@ -105,6 +107,9 @@ export function CheckoutFrame({
     try {
       checkout = new window.AMSCheckoutPage({
         environment: clientEnv.antomEnv,
+        // Match the storefront language so the embedded cashier isn't a
+        // different locale than the rest of the page.
+        locale: 'en_US',
         onEventCallback: (event) => {
           // SDK events drive UI transitions only. Authoritative payment state
           // must come from the server-side inquiryPayment call or the webhook.
@@ -160,12 +165,18 @@ export function CheckoutFrame({
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-        <p className="text-sm font-medium text-red-800">{error}</p>
+      <div className="rounded-2xl border border-red-100 bg-red-50/60 p-8 text-center">
+        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+            <path d="M12 8v5M12 16.5h.01" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          </svg>
+        </div>
+        <p className="mt-4 text-sm font-medium text-red-800">{error}</p>
         {normalUrl && (
           <a
             href={normalUrl}
-            className="mt-4 inline-block rounded-lg bg-antom-primary px-4 py-2 text-sm font-medium text-white hover:bg-antom-dark"
+            className="mt-5 inline-block rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ink-soft"
           >
             Continue with hosted checkout
           </a>
@@ -202,17 +213,17 @@ export function CheckoutFrame({
           className="bg-white"
         />
         {!sdkReady && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white">
+          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white">
             <div className="w-full max-w-md px-8 text-center">
-              <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-gray-200 border-t-antom-primary" />
+              <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-gray-200 border-t-ink" />
               <p className="mt-5 text-sm font-medium text-gray-900">
                 Loading secure checkout
               </p>
               <div className="mt-8 space-y-3">
-                <div className="h-12 rounded-md bg-gray-100" />
-                <div className="h-12 rounded-md bg-gray-100" />
-                <div className="h-12 rounded-md bg-gray-100" />
-                <div className="mt-5 h-11 rounded-md bg-gray-200" />
+                <div className="h-12 animate-pulse rounded-xl bg-gray-100" />
+                <div className="h-12 animate-pulse rounded-xl bg-gray-100" />
+                <div className="h-12 animate-pulse rounded-xl bg-gray-100" />
+                <div className="mt-5 h-11 animate-pulse rounded-xl bg-gray-200" />
               </div>
             </div>
           </div>
