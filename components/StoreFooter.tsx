@@ -9,19 +9,19 @@ export function StoreFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-100 bg-white">
+    <footer className="mt-12 bg-ui-panel">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-xs">
-            <div className="text-base font-semibold tracking-tight text-gray-950">
+            <div className="text-[15px] font-semibold tracking-tight text-ui-ink">
               {STORE.name}
             </div>
-            <p className="mt-1 text-sm text-gray-500">{STORE.tagline}</p>
+            <p className="mt-1 text-sm text-ui-gray">{STORE.tagline}</p>
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <svg viewBox="0 0 24 24" className="h-4 w-4 text-gray-400" aria-hidden>
+            <div className="flex items-center gap-2 text-sm text-ui-gray">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
                 <path
                   d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"
                   fill="none"
@@ -37,17 +37,17 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-gray-100 pt-6 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-ui-line/60 pt-6 text-xs text-ui-gray sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>
               © {year} {STORE.name}
             </span>
-            <span className="text-gray-300">·</span>
+            <span className="text-ui-line">·</span>
             <span>For demonstration purposes only</span>
-            <a href={`${REPO}/blob/master/LEGAL.md`} className="text-gray-500 underline-offset-2 hover:underline">
+            <a href={`${REPO}/blob/master/LEGAL.md`} className="transition hover:text-ui-ink">
               Legal
             </a>
-            <a href={`${REPO}/blob/master/LICENSE`} className="text-gray-500 underline-offset-2 hover:underline">
+            <a href={`${REPO}/blob/master/LICENSE`} className="transition hover:text-ui-ink">
               License
             </a>
           </div>

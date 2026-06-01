@@ -14,27 +14,29 @@ const config: Config = {
           dark: '#0958D9',
           accent: '#FAAD14',
         },
-        // Near-black primary action color (Apple/Stripe minimal direction).
-        ink: {
-          DEFAULT: '#0A0A0A',
-          soft: '#1A1A1A',
+        // Neutral product-page palette.
+        ui: {
+          panel: '#f5f5f7',
+          ink: '#1d1d1f',
+          gray: '#6e6e73',
+          blue: '#0071e3',
+          'blue-hover': '#0077ed',
+          line: '#d2d2d7',
         },
       },
       fontFamily: {
         sans: [
-          'Alibaba PuHuiTi',
-          'AlibabaPuHuiTi',
-          'ui-sans-serif',
           'system-ui',
-          '-apple-system',
-          'Segoe UI',
-          'Roboto',
+          'BlinkMacSystemFont',
+          'SF Pro Display',
+          'SF Pro Text',
+          'Helvetica Neue',
+          'Alibaba PuHuiTi',
           'sans-serif',
         ],
       },
       boxShadow: {
-        card: '0 1px 2px rgba(16,24,40,0.04), 0 8px 24px rgba(16,24,40,0.06)',
-        'card-lg': '0 2px 4px rgba(16,24,40,0.05), 0 16px 40px rgba(16,24,40,0.08)',
+        card: '0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)',
       },
       keyframes: {
         'fade-in-up': {
