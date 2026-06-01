@@ -1,6 +1,6 @@
 # Antom × Vercel — One-time Payment Demo
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Dashboard&envLink=https%3A%2F%2Fgithub.com%2Fantom-merchant%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Dashboard&envLink=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo)
 
 Accept global payments via **Antom Checkout Page (Embedded)**, powered by Next.js 14 App Router.
 
