@@ -5,12 +5,21 @@ interface PaymentStatusBadgeProps {
 }
 
 const STYLES: Record<RenderablePaymentStatus, string> = {
-  SUCCESS: 'bg-green-100 text-green-800 border-green-200',
-  FAIL: 'bg-red-100 text-red-800 border-red-200',
-  CANCELLED: 'bg-gray-100 text-gray-800 border-gray-200',
-  PENDING: 'bg-amber-100 text-amber-800 border-amber-200',
-  PROCESSING: 'bg-amber-100 text-amber-800 border-amber-200',
-  UNKNOWN: 'bg-gray-100 text-gray-700 border-gray-200',
+  SUCCESS: 'bg-green-50 text-green-700 border-green-200',
+  FAIL: 'bg-red-50 text-red-700 border-red-200',
+  CANCELLED: 'bg-gray-100 text-gray-700 border-gray-200',
+  PENDING: 'bg-amber-50 text-amber-700 border-amber-200',
+  PROCESSING: 'bg-amber-50 text-amber-700 border-amber-200',
+  UNKNOWN: 'bg-gray-100 text-gray-600 border-gray-200',
+};
+
+const DOTS: Record<RenderablePaymentStatus, string> = {
+  SUCCESS: 'bg-green-500',
+  FAIL: 'bg-red-500',
+  CANCELLED: 'bg-gray-400',
+  PENDING: 'bg-amber-500',
+  PROCESSING: 'bg-amber-500',
+  UNKNOWN: 'bg-gray-400',
 };
 
 const LABELS: Record<RenderablePaymentStatus, string> = {
@@ -25,8 +34,9 @@ const LABELS: Record<RenderablePaymentStatus, string> = {
 export function PaymentStatusBadge({ status }: PaymentStatusBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${STYLES[status]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${STYLES[status]}`}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${DOTS[status]}`} />
       {LABELS[status]}
     </span>
   );

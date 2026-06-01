@@ -3,15 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 17, 24, 39;
-  --background-rgb: 249, 250, 251;
+  --foreground-rgb: 10, 10, 10;
+  --background-rgb: 250, 250, 250;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+::selection {
+  background: rgba(22, 119, 255, 0.16);
+}
+
+/* --- Antom CKP embedded iframe ---------------------------------------------
+ * These values are tuned to the AMS Checkout SDK. Do NOT change the height /
+ * width / transform — they keep the embedded cashier rendered at the right
+ * scale inside #ckp-container.
+ * ------------------------------------------------------------------------- */
 #ckp-container iframe {
   display: block;
   height: 880px;
