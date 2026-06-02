@@ -5,8 +5,21 @@ import { StoreFooter } from '@/components/StoreFooter';
 import { STORE } from '@/config/store';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://antom-payment-demo.vercel.app',
+  ),
   title: `${STORE.name} — Premium Audio`,
   description: `${STORE.tagline} Secure global checkout powered by Antom.`,
+  openGraph: {
+    title: `${STORE.name} — Premium Audio`,
+    description: `${STORE.tagline} Secure global checkout powered by Antom.`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${STORE.name} — Premium Audio`,
+    description: `${STORE.tagline} Secure global checkout powered by Antom.`,
+  },
 };
 
 export default function RootLayout({

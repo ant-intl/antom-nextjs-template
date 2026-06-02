@@ -1,6 +1,8 @@
 # Antom × Vercel — One-time Payment Demo
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Dashboard&envLink=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template&env=ANTOM_CLIENT_ID,ANTOM_PRIVATE_KEY,ANTOM_PUBLIC_KEY,ANTOM_GATEWAY_URL,NEXT_PUBLIC_ANTOM_ENV,NEXT_PUBLIC_SITE_URL&envDescription=Get%20credentials%20from%20Antom%20Dashboard&envLink=https%3A%2F%2Fgithub.com%2Fant-intl%2Fantom-nextjs-template%23environment-variables&project-name=antom-payment-demo&repository-name=antom-payment-demo&demo-title=Antom%20Payment%20Demo&demo-description=One-time%20checkout%20storefront%20with%20Antom%20CKP%20Embedded&demo-url=https%3A%2F%2Fantom-payment-demo.vercel.app&demo-image=https%3A%2F%2Fantom-payment-demo.vercel.app%2Fimages%2Fheadphones-1.jpg)
+
+**▲ [Live demo](https://antom-payment-demo.vercel.app)** — a single-product storefront with one-time checkout via Antom CKP Embedded.
 
 Accept global payments via **Antom Checkout Page (Embedded)**, powered by Next.js 14 App Router.
 
