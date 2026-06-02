@@ -62,6 +62,14 @@ function ChevronRight() {
   );
 }
 
+function ChevronLeft() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+      <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function Check() {
   return (
     <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-ui-blue" aria-hidden>
@@ -89,7 +97,12 @@ export function InlineCheckout({ product }: InlineCheckoutProps) {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
 
+  const gallery =
+    product.images && product.images.length > 0
+      ? product.images
+      : [product.imageSrc];
   const subtotal = product.price * quantity;
 
   async function startCheckout() {
@@ -244,27 +257,80 @@ export function InlineCheckout({ product }: InlineCheckoutProps) {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.55fr_1fr] lg:gap-12">
           {/* Image panel */}
           <div className="animate-fade-in-up">
-            <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-ui-panel sm:aspect-[5/4]">
+            <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-white">
               <Image
-                src={product.imageSrc}
-                alt={product.name}
+                key={gallery[activeImage]}
+                src={gallery[activeImage]}
+                alt={`${product.name} — view ${activeImage + 1} of ${gallery.length}`}
                 width={620}
                 height={620}
                 priority
-                className="w-[86%] max-w-xl object-contain drop-shadow-xl"
+                className="h-full w-full animate-fade-in object-contain"
               />
-              <button
-                type="button"
-                aria-label="Next image"
-                className="absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-ui-gray shadow-sm backdrop-blur transition hover:bg-white lg:flex"
-              >
-                <ChevronRight />
-              </button>
-              <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-ui-ink/70" />
-                <span className="h-2 w-2 rounded-full bg-ui-ink/20" />
-              </div>
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Previous image"
+                    onClick={() =>
+                      setActiveImage((i) => (i - 1 + gallery.length) % gallery.length)
+                    }
+                    className="absolute left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-ui-gray shadow-sm backdrop-blur transition hover:bg-white lg:flex"
+                  >
+                    <ChevronLeft />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next image"
+                    onClick={() => setActiveImage((i) => (i + 1) % gallery.length)}
+                    className="absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-ui-gray shadow-sm backdrop-blur transition hover:bg-white lg:flex"
+                  >
+                    <ChevronRight />
+                  </button>
+                  <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2">
+                    {gallery.map((src, i) => (
+                      <button
+                        key={src}
+                        type="button"
+                        aria-label={`Go to image ${i + 1}`}
+                        aria-current={i === activeImage}
+                        onClick={() => setActiveImage(i)}
+                        className={`h-2 w-2 rounded-full transition ${
+                          i === activeImage ? 'bg-ui-ink/70' : 'bg-ui-ink/20 hover:bg-ui-ink/40'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Thumbnail strip */}
+            {gallery.length > 1 && (
+              <div className="mt-4 flex gap-3">
+                {gallery.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    aria-label={`View image ${i + 1}`}
+                    onClick={() => setActiveImage(i)}
+                    className={`relative flex aspect-square w-20 items-center justify-center overflow-hidden rounded-xl bg-white transition ${
+                      i === activeImage
+                        ? 'ring-2 ring-ui-blue'
+                        : 'ring-1 ring-ui-line/60 hover:ring-ui-line'
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt=""
+                      width={80}
+                      height={80}
+                      className="w-[82%] object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Config rail */}

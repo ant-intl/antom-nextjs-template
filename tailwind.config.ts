@@ -43,6 +43,10 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
         'check-pop': {
           '0%': { transform: 'scale(0.6)', opacity: '0' },
           '60%': { transform: 'scale(1.08)', opacity: '1' },
@@ -51,6 +55,7 @@ const config: Config = {
       },
       animation: {
         'fade-in-up': 'fade-in-up 0.4s cubic-bezier(0.22,1,0.36,1) both',
+        'fade-in': 'fade-in 0.35s ease both',
         'check-pop': 'check-pop 0.5s cubic-bezier(0.22,1,0.36,1) both',
       },
     },
