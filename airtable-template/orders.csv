@@ -1,3 +1,0 @@
-Order ID,Description,Amount minor,Currency,Checkout state,Checkout URL,Payment request ID,Payment session ID,Session expires at,Last error,Buyer ID,Buyer first name,Buyer last name,Buyer email,Payment result,Capture result,Antom payment ID
-DEMO-ORDER-001,Synthetic workshop order; no payment has been created,2500,USD,Not configured,,,,,,,,,,,,
-DEMO-ORDER-002,Synthetic service order; no payment has been created,5000,EUR,Not configured,,,,,,,,,,,,

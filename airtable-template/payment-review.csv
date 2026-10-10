@@ -1,3 +1,0 @@
-Review ID,Order ID,Antom payment ID,Amount checked,Currency,Review status,Verification source,Verified at,Verified by,Notes
-DEMO-REVIEW-001,DEMO-ORDER-001,,,,Pending review,,,,Synthetic example only; no payment occurred and nothing has been verified.
-DEMO-REVIEW-002,DEMO-ORDER-002,,,,Pending review,,,,Synthetic example only; verify the actual order and Antom transaction including capture when required.

@@ -135,7 +135,7 @@ export function CheckoutFrame({
               if (token) {
                 window.location.assign(`/result?prid=${encodeURIComponent(token)}`);
               } else {
-                window.location.assign('/store');
+                window.location.assign('/');
               }
               break;
             }

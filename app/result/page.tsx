@@ -158,7 +158,7 @@ function ResultInner() {
         <FailIcon />
         <p className="mt-4 text-sm font-medium text-red-800">{error}</p>
         <Link
-          href="/store"
+          href="/"
           className="mt-6 inline-block rounded-full bg-ui-blue px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ui-blue-hover"
         >
           Back to store
@@ -232,14 +232,14 @@ function ResultInner() {
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link
-          href="/store"
+          href="/"
           className="flex-1 rounded-full bg-ui-blue px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-ui-blue-hover"
         >
           Continue shopping
         </Link>
         {(data.status === 'FAIL' || data.status === 'CANCELLED') && (
           <Link
-            href="/store"
+            href="/"
             className="flex-1 rounded-full border border-gray-200 px-5 py-3 text-center text-sm font-semibold text-gray-900 transition hover:bg-gray-50"
           >
             Try again
