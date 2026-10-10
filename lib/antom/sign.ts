@@ -114,3 +114,48 @@ export function parseSignatureHeader(header: string): {
     signature: result.signature ? decodeURIComponent(result.signature) : undefined,
   };
 }
+
+export interface VerifyResponseOptions {
+  uri: string;
+  /** Original response bytes, before UTF-8 decoding or JSON parsing. */
+  body: Uint8Array;
+  headers: Headers;
+  expectedClientId: string;
+  antomPublicKey: string;
+  now?: number;
+}
+
+/** API responses use Response-Time, not the outbound Request-Time. */
+export function verifyResponse(opts: VerifyResponseOptions): boolean {
+  try {
+    const clientId = opts.headers.get('client-id');
+    const responseTime = opts.headers.get('response-time');
+    const header = opts.headers.get('signature');
+    if (!opts.expectedClientId || clientId !== opts.expectedClientId || !responseTime || !header || header.length > 16_384) return false;
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(responseTime)) return false;
+    const timestamp = Date.parse(responseTime);
+    const now = opts.now ?? Date.now();
+    if (!Number.isFinite(timestamp) || !Number.isFinite(now) || Math.abs(now - timestamp) > 5 * 60 * 1000) return false;
+
+    // Duplicate or unsupported fields must not select a different verification key.
+    const names = new Set<string>();
+    for (const part of header.split(',')) {
+      const separator = part.indexOf('=');
+      if (separator < 1) return false;
+      const name = part.slice(0, separator).trim();
+      if (!['algorithm', 'keyVersion', 'signature'].includes(name) || names.has(name)) return false;
+      names.add(name);
+    }
+    const parsed = parseSignatureHeader(header);
+    if (parsed.algorithm !== 'RSA256' || !parsed.keyVersion || !/^\d+$/.test(parsed.keyVersion) || !parsed.signature) return false;
+    const signature = Buffer.from(parsed.signature, 'base64');
+    if (!signature.length || signature.toString('base64') !== parsed.signature) return false;
+    const signedBytes = Buffer.concat([
+      Buffer.from(`POST ${opts.uri}\n${clientId}.${responseTime}.`, 'utf8'),
+      Buffer.from(opts.body),
+    ]);
+    return crypto.verify('RSA-SHA256', signedBytes, toPem(opts.antomPublicKey, 'PUBLIC'), signature);
+  } catch {
+    return false;
+  }
+}

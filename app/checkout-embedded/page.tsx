@@ -47,8 +47,8 @@ function CheckoutInner() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
         <p className="mb-3 text-red-800">{error}</p>
-        <Link href="/" className="text-antom-primary hover:underline">
-          ← Back to home
+        <Link href="/store" className="text-antom-primary hover:underline">
+          ← Back to store
         </Link>
       </div>
     );
@@ -77,7 +77,7 @@ export default function CheckoutEmbeddedPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-6">
         <Link
-          href="/"
+          href="/store"
           className="text-sm text-gray-600 hover:text-antom-primary"
         >
           ← Back

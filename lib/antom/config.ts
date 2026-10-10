@@ -1,4 +1,5 @@
 import 'server-only';
+import { validateGateway } from './transport';
 import {
   ANTOM_KEY_VERSION,
   ANTOM_SIGNATURE_ALGORITHM,
@@ -18,44 +19,6 @@ const REQUIRED = [
   'NEXT_PUBLIC_ANTOM_ENV',
   'NEXT_PUBLIC_SITE_URL',
 ] as const;
-
-/**
- * Hostnames we will sign requests to. Anything else fails fast at boot —
- * a misconfigured ANTOM_GATEWAY_URL must never cause the private key to
- * be used against an attacker-controlled domain.
- */
-const ALLOWED_GATEWAY_HOSTS = new Set<string>([
-  'open-sea-global.alipay.com',
-  'open-eu-global.alipay.com',
-  'open-us-global.alipay.com',
-  'open-global.alipay.com',
-]);
-
-function validateGateway(raw: string): string {
-  let url: URL;
-  try {
-    url = new URL(raw);
-  } catch {
-    throw new Error(`[antom] ANTOM_GATEWAY_URL is not a valid URL: ${raw}`);
-  }
-  if (url.protocol !== 'https:') {
-    throw new Error(`[antom] ANTOM_GATEWAY_URL must use https, got: ${url.protocol}`);
-  }
-  if (!ALLOWED_GATEWAY_HOSTS.has(url.hostname)) {
-    throw new Error(
-      `[antom] ANTOM_GATEWAY_URL host '${url.hostname}' is not in the allowed list. ` +
-        `Allowed: ${[...ALLOWED_GATEWAY_HOSTS].join(', ')}`,
-    );
-  }
-  // Reject paths / query / fragment — base URL only.
-  if (url.pathname !== '/' && url.pathname !== '') {
-    throw new Error(`[antom] ANTOM_GATEWAY_URL must not include a path, got: ${url.pathname}`);
-  }
-  if (url.search || url.hash) {
-    throw new Error(`[antom] ANTOM_GATEWAY_URL must not include query or fragment`);
-  }
-  return `${url.protocol}//${url.host}`;
-}
 
 function loadConfig() {
   const missing = REQUIRED.filter((k) => !process.env[k]);
